@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "FourWheelDrive", group = "Samples")
-public class FourWheelDrive extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "GamepadControlledFourWheelDrive", group = "Samples")
+public class GamepadControlledFourWheelDrive extends LinearOpMode {
 
     // Declare motors for the 4 wheels
     private DcMotor frontLeft;
@@ -36,20 +36,40 @@ public class FourWheelDrive extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Run all motors forward while the OpMode is active
+        // Run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Set all wheels to move forward
-            double power = 0.5; // Change this value to control speed (0.0 to 1.0)
+            // Get the values from the gamepad joysticks
+            double drive = -gamepad1.left_stick_y; // Forward/Backward (negate because Y is inverted)
+            double turn = gamepad1.right_stick_x;  // Left/Right turn
 
-            // Set motor power for each wheel
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-            backLeft.setPower(power);
-            backRight.setPower(power);
+            // Calculate the power for each motor based on joystick inputs
+            double frontLeftPower = drive + turn;
+            double frontRightPower = drive - turn;
+            double backLeftPower = drive + turn;
+            double backRightPower = drive - turn;
+
+            // Normalize the values so that no motor power exceeds 1.0
+            double maxPower = Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower),
+                    Math.max(Math.abs(backLeftPower), Math.abs(backRightPower))));
+            if (maxPower > 1.0) {
+                frontLeftPower /= maxPower;
+                frontRightPower /= maxPower;
+                backLeftPower /= maxPower;
+                backRightPower /= maxPower;
+            }
+
+            // Set the power to each motor
+            frontLeft.setPower(frontLeftPower);
+            frontRight.setPower(frontRightPower);
+            backLeft.setPower(backLeftPower);
+            backRight.setPower(backRightPower);
 
             // Send telemetry to the driver station for debugging
-            telemetry.addData("Motor Power", power);
+            telemetry.addData("Front Left Power", frontLeftPower);
+            telemetry.addData("Front Right Power", frontRightPower);
+            telemetry.addData("Back Left Power", backLeftPower);
+            telemetry.addData("Back Right Power", backRightPower);
             telemetry.update();
         }
 
