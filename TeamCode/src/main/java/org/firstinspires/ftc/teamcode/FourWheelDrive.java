@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "GamepadControlledFourWheelDrive", group = "Samples")
-public class GamepadControlledFourWheelDrive extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "FourWheelDrive", group = "Samples")
+public class FourWheelDrive extends LinearOpMode {
 
     // Declare motors for the 4 wheels
     private DcMotor frontLeft;
